@@ -64,9 +64,13 @@ Lokalizacja tego pliku: `/Users/rafalfurmaga/spottedx-fe/apps/payload-litewkatea
 ## Po deployu: Smoke test
 
 - Automatyczny smoke test uruchamia się po `yarn deploy:app`.
-- Ręcznie: `CLOUDFLARE_ENV=prod yarn smoke:test` lub `CLOUDFLARE_ENV=dev yarn smoke:test`.
-- Sprawdza:
-  - `GET /api/docs?limit=1` → oczekiwane `200`
-  - `GET /admin` → oczekiwane `200`
-- Zmienna `SMOKE_BASE` pozwala przetestować alternatywny host:
-  - Przykład: `SMOKE_BASE=https://twoj-host.example.com CLOUDFLARE_ENV=prod yarn smoke:test`
+- Alternatywnie możesz uruchomić smoke testy przez Vitest:
+  - `CLOUDFLARE_ENV=prod yarn smoke:test:vitest` lub z własnym hostem `SMOKE_BASE=https://payload-litewkateampl-prod.spottedx.workers.dev yarn smoke:test:vitest`
+  - Zakres (Vitest):
+    - `GET /api/docs?limit=1` → `200` i JSON z kluczem `docs`
+    - `GET /admin` → `200` lub `302`
+    - `GET /admin/login` → `200` lub `302` (gdy `200`, sprawdza treść: `Payload`/`Sign In` oraz miękkie ostrzeżenia dla `email`/`password` w HTML)
+    - `GET /admin/collections/docs` → `200` lub `302`
+    - `GET /api/users/me` → `200` (ma `user`) lub `401` (ma `errors`)
+    - `POST /api/graphql` (Docs query) → `200` i `data.Docs`
+    - `GET /api/graphql-playground` → `200` lub `404` (akceptowane w prod)
