@@ -78,3 +78,28 @@ Celem testów jest szybka i wiarygodna weryfikacja kluczowych funkcji aplikacji 
 ---
 
 Lokalizacja: `/Users/rafalfurmaga/spottedx-fe/apps/payload-litewkateampl/docs/tests.md`.
+
+## Upload (smoke przez Vitest)
+
+- Plik testu: `tests/smoke/upload.spec.ts`
+- Wymaga ustawienia zmiennych środowiskowych:
+  - `SMOKE_EMAIL` — email użytkownika z uprawnieniami do uploadu
+  - `SMOKE_PASSWORD` — hasło
+- Zakres:
+  - Logowanie (`POST /api/users/login`) i pobranie tokena/cookie
+  - Upload 1×1 PNG (`POST /api/media`) z polem `alt`
+  - Weryfikacja odczytu utworzonego dokumentu (`GET /api/media/:id`)
+- Uruchomienie:
+  - `CLOUDFLARE_ENV=prod SMOKE_EMAIL=you@example.com SMOKE_PASSWORD=secret yarn smoke:test:upload`
+- Kryteria:
+  - `POST /api/media` → `200` lub `201`, odpowiedź zawiera dokument z `id`
+  - `GET /api/media/:id` → `200`, zawiera `filename` (lub `file.filename`)
+
+## R2 — jurysdykcja EU (ważne dla testów)
+
+- Tworzenie bucketa z jurysdykcją: używaj CLI z lowercase `--jurisdiction eu`.
+  - Przykład: `wrangler r2 bucket create payload-litewkateampl --jurisdiction eu`
+- Bindingi w `wrangler.jsonc` muszą zawierać `jurisdiction: "eu"` dla `r2_buckets` (root oraz `env.dev`/`env.prod`).
+- Weryfikacja lokalizacji bucketa:
+  - `wrangler r2 bucket info payload-litewkateampl --jurisdiction eu --json` → oczekiwane `location: "EEUR"`.
+- Bez poprawnej jurysdykcji Worker może zwracać błędy typu `bucket_not_found` przy deployu/testach.

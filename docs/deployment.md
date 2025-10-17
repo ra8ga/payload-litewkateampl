@@ -74,3 +74,39 @@ Lokalizacja tego pliku: `/Users/rafalfurmaga/spottedx-fe/apps/payload-litewkatea
     - `GET /api/users/me` → `200` (ma `user`) lub `401` (ma `errors`)
     - `POST /api/graphql` (Docs query) → `200` i `data.Docs`
     - `GET /api/graphql-playground` → `200` lub `404` (akceptowane w prod)
+
+## Cloudflare: Workers, D1 i R2 (EU)
+
+- Platforma: aplikacja działa na `Cloudflare Workers` (OpenNext) z bazą `D1` i storage `R2`.
+- Bindings (wrangler.jsonc):
+  - `D1` — baza danych (SQLite na Workers); używana przez Payload do kolekcji i migracji.
+  - `R2` — bucket na pliki (media) używany przez plugin `@payloadcms/storage-r2`.
+- Jurysdykcja danych: `R2` musi być utworzony z jurysdykcją `EU`.
+  - Potwierdza spełnienie wymagań lokalizacji danych i zgodność regulacyjną.
+
+### D1 — baza danych
+- Migracje: `CLOUDFLARE_ENV=<env> yarn deploy:database` (wykonuje `payload migrate` i `wrangler d1 execute D1 'PRAGMA optimize'`).
+- Binding: `wrangler.jsonc -> env.<env>.d1_databases[]` z `binding: "D1"`.
+- Debug: sprawdzaj `/admin/collections/docs` po migracjach (brak `SQLITE_ERROR`).
+
+### R2 — bucket (EU)
+- Nazwa: `payload-litewkateampl` (binding `R2`).
+- Wymagane: utworzenie w jurysdykcji `EU`.
+- Zalecana procedura (ostrożnie: usunięcie bucketu usuwa pliki!):
+  - Usuń bieżący bucket: `wrangler r2 bucket delete payload-litewkateampl`
+  - Utwórz ponownie w EU: `wrangler r2 bucket create payload-litewkateampl --jurisdiction eu`
+  - Zweryfikuj listę: `wrangler r2 bucket list`
+- Bindingi w `wrangler.jsonc` muszą zawierać `jurisdiction: "eu"` (root oraz `env.dev`/`env.prod`):
+  - `wrangler.jsonc -> r2_buckets[]` z `binding: "R2"`, `bucket_name: "payload-litewkateampl"`, `jurisdiction: "eu"`.
+- Payload plugin: w `src/payload.config.ts` skonfigurowany `r2Storage({ bucket: cloudflare.env.R2, collections: { media: true } })`.
+
+### Weryfikacja po zmianie R2 na EU
+- Deploy aplikacji: `CLOUDFLARE_ENV=<env> yarn deploy:app`.
+- Sprawdź jurysdykcję i lokalizację bucketa:
+  - `wrangler r2 bucket info payload-litewkateampl --jurisdiction eu --json` → oczekiwane `location: "EEUR"`.
+- Test uploadu (Vitest):
+  - Ustaw `SMOKE_EMAIL` i `SMOKE_PASSWORD` dla konta z uprawnieniami uploadu.
+  - `CLOUDFLARE_ENV=<env> SMOKE_EMAIL=you@example.com SMOKE_PASSWORD=secret yarn smoke:test:upload`
+  - Oczekiwane wyniki:
+    - `POST /api/media` → `200/201`, odpowiedź zawiera utworzony dokument z `id`
+    - `GET /api/media/:id` → `200` i `filename` (lub `file.filename`)

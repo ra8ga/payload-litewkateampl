@@ -23,7 +23,8 @@
   "r2_buckets": [
     {
       "binding": "R2",
-      "bucket_name": "payload-litewkateampl"
+      "bucket_name": "payload-litewkateampl",
+      "jurisdiction": "eu"
     }
   ],
   "env": {
@@ -44,7 +45,8 @@
       "r2_buckets": [
         {
           "binding": "R2",
-          "bucket_name": "payload-litewkateampl"
+          "bucket_name": "payload-litewkateampl",
+          "jurisdiction": "eu"
         }
       ]
     },
@@ -68,7 +70,8 @@
       "r2_buckets": [
         {
           "binding": "R2",
-          "bucket_name": "payload-litewkateampl"
+          "bucket_name": "payload-litewkateampl",
+          "jurisdiction": "eu"
         }
       ]
     }
