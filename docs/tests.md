@@ -30,6 +30,7 @@ Celem testów jest szybka i wiarygodna weryfikacja kluczowych funkcji aplikacji 
 
 - `CLOUDFLARE_ENV` — wybór środowiska (`dev`, `prod`) do smoke testów
 - `SMOKE_BASE` — nadpisanie docelowego hosta (np. `https://payload-litewkateampl-prod.spottedx.workers.dev`)
+- `.env.test` — opcjonalny plik z lokalnymi/CI zmiennymi; automatycznie ładowany przez Vitest i Playwright, jeśli istnieje (zob. `.env.test.example`).
 
 ## Uruchamianie
 
@@ -43,6 +44,7 @@ Celem testów jest szybka i wiarygodna weryfikacja kluczowych funkcji aplikacji 
   - `yarn test` lub `vitest run` (uwaga: integracyjne mogą wymagać lokalnych zależności Payload)
 - Playwright (E2E):
   - `yarn test:e2e` (zgodnie z `playwright.config.ts`)
+  - Artefakty: raport HTML w `playwright-report/`, pozostałe pliki w `test-results/`.
 
 ## Kryteria i akceptacja
 
@@ -107,7 +109,7 @@ Lokalizacja: `/Users/rafalfurmaga/spottedx-fe/apps/payload-litewkateampl/docs/te
 
 ## Konfiguracje testów (ścieżki)
 
-- `tests/config/vitest.config.mts` — główny config Vitest.
+- `tests/config/vitest.config.mts` — główny config Vitest (ładuje `.env.test`, jeśli istnieje).
 - `tests/setup/vitest.setup.ts` — plik setup dla Vitest.
-- `tests/e2e/playwright.config.ts` — config Playwright (z `testDir: '.'`).
+- `tests/e2e/playwright.config.ts` — config Playwright (ładuje `.env.test`, reporter HTML, `outputDir`).
 - Skrypty w `package.json` wskazują te ścieżki przez `--config`/`-c` (np. `yarn test:int`, `yarn test:e2e`, `yarn smoke:test:vitest`).
