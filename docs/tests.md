@@ -103,3 +103,10 @@ Lokalizacja: `/Users/rafalfurmaga/spottedx-fe/apps/payload-litewkateampl/docs/te
 - Weryfikacja lokalizacji bucketa:
   - `wrangler r2 bucket info payload-litewkateampl --jurisdiction eu --json` → oczekiwane `location: "EEUR"`.
 - Bez poprawnej jurysdykcji Worker może zwracać błędy typu `bucket_not_found` przy deployu/testach.
+
+## Konfiguracje testów (ścieżki)
+
+- `tests/config/vitest.config.mts` — główny config Vitest.
+- `tests/setup/vitest.setup.ts` — plik setup dla Vitest.
+- `tests/e2e/playwright.config.ts` — config Playwright (z `testDir: '.'`).
+- Skrypty w `package.json` wskazują te ścieżki przez `--config`/`-c` (np. `yarn test:int`, `yarn test:e2e`, `yarn smoke:test:vitest`).
