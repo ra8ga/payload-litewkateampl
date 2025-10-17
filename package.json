@@ -11,7 +11,6 @@
     "smoke:test": "bash -lc './scripts/smoke.sh'",
     "smoke:test:vitest": "vitest run tests/smoke/smoke.spec.ts --config ./vitest.config.mts",
     "smoke:test:upload": "vitest run tests/smoke/upload.spec.ts --config ./vitest.config.mts",
-
     "deploy:database": "cross-env NODE_ENV=production PAYLOAD_SECRET=ignore payload migrate && wrangler d1 execute D1 --command 'PRAGMA optimize' --env=$CLOUDFLARE_ENV --remote",
     "dev": "cross-env NODE_OPTIONS=--no-deprecation next dev",
     "devsafe": "rm -rf .next && rm -rf .open-next && cross-env NODE_OPTIONS=--no-deprecation next dev",
@@ -59,7 +58,7 @@
     "typescript": "5.7.3",
     "vite-tsconfig-paths": "5.1.4",
     "vitest": "3.2.3",
-    "wrangler": "~4.42.0"
+    "wrangler": "~4.43.0"
   },
   "engines": {
     "node": "^18.20.2 || >=20.9.0",
