@@ -60,6 +60,7 @@ Celem testów jest szybka i wiarygodna weryfikacja kluczowych funkcji aplikacji 
 
 ## Rekomendacje CI
 
+- CI/PR: `yarn test:ci` (agreguje: `yarn test:int`, `yarn smoke:test:vitest`, `yarn test:e2e`)
 - Pre-deploy: `yarn test` (unit + integracja) oraz `yarn smoke:test:vitest` wskazując DEV/STAGE host
 - Post-deploy: automatycznie `yarn smoke:test` (bash)
 - Regularnie (np. nightly): `yarn test:e2e` dla scenariuszy UI
