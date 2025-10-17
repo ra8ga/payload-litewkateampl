@@ -9,8 +9,8 @@
     "deploy": "yarn deploy:database && yarn deploy:app",
     "deploy:app": "opennextjs-cloudflare build --env=$CLOUDFLARE_ENV && opennextjs-cloudflare deploy --env=$CLOUDFLARE_ENV && yarn smoke:test",
     "smoke:test": "bash -lc './scripts/smoke.sh'",
-    "smoke:test:vitest": "vitest run tests/smoke/smoke.spec.ts --config ./vitest.config.mts",
-    "smoke:test:upload": "vitest run tests/smoke/upload.spec.ts --config ./vitest.config.mts",
+    "smoke:test:vitest": "vitest run tests/smoke/smoke.spec.ts --config ./tests/config/vitest.config.mts",
+    "smoke:test:upload": "vitest run tests/smoke/upload.spec.ts --config ./tests/config/vitest.config.mts",
     "deploy:database": "cross-env NODE_ENV=production PAYLOAD_SECRET=ignore payload migrate && wrangler d1 execute D1 --command 'PRAGMA optimize' --env=$CLOUDFLARE_ENV --remote",
     "dev": "cross-env NODE_OPTIONS=--no-deprecation next dev",
     "devsafe": "rm -rf .next && rm -rf .open-next && cross-env NODE_OPTIONS=--no-deprecation next dev",
@@ -24,8 +24,8 @@
     "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview --env=$CLOUDFLARE_ENV",
     "start": "cross-env NODE_OPTIONS=--no-deprecation next start",
     "test": "yarn test:int && yarn test:e2e",
-    "test:e2e": "cross-env NODE_OPTIONS=\"--no-deprecation --no-experimental-strip-types\" playwright test",
-    "test:int": "cross-env NODE_OPTIONS=--no-deprecation vitest run --config ./vitest.config.mts"
+    "test:e2e": "cross-env NODE_OPTIONS=\"--no-deprecation --no-experimental-strip-types\" playwright test -c ./tests/e2e/playwright.config.ts",
+    "test:int": "cross-env NODE_OPTIONS=--no-deprecation vitest run --config ./tests/config/vitest.config.mts"
   },
   "dependencies": {
     "@opennextjs/cloudflare": "^1.6.5",
