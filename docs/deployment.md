@@ -28,18 +28,18 @@ Poniżej znajdziesz sprawdzoną (wzorową) procedurę wdrożenia aplikacji `payl
 ## Środowisko production
 
 1. Sekrety:
-   - Ustaw `PAYLOAD_SECRET` dla prod: `wrangler secret put PAYLOAD_SECRET --env=production`
-2. Upewnij się, że `wrangler.jsonc` ma sekcję `env.production` (bindings do D1/R2/Assets itd.).
+   - Ustaw `PAYLOAD_SECRET` dla prod: `wrangler secret put PAYLOAD_SECRET --env=prod`
+2. Upewnij się, że `wrangler.jsonc` ma sekcję `env.prod` (bindings do D1/R2/Assets itd.).
 3. Migracje D1 na prod:
-   - `CLOUDFLARE_ENV=production yarn deploy:database`
+   - `CLOUDFLARE_ENV=prod yarn deploy:database`
 4. Build + deploy aplikacji na prod:
-   - `CLOUDFLARE_ENV=production yarn deploy:app`
+   - `CLOUDFLARE_ENV=prod yarn deploy:app`
 5. Weryfikacja:
    - Sprawdź kluczowe endpointy (jak w dev) na hostname prod.
 
 ## Szybka checklista
 
-- [ ] `wrangler.jsonc` zawiera `env.dev` i/lub `env.production`
+- [ ] `wrangler.jsonc` zawiera `env.dev` i/lub `env.prod`
 - [ ] D1 (migracje) wdrożone: `deploy:database`
 - [ ] Worker i Assets wdrożone: `deploy:app`
 - [ ] `admin/collections/docs` zwraca `200` i nie ma błędów `SQLITE_ERROR`
