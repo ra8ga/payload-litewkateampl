@@ -50,9 +50,6 @@
     },
     "prod": {
       "name": "payload-litewkateampl-prod",
-      "vars": {
-        "PAYLOAD_SECRET": "bf009eaa06327cf2e1545eca7ac3fb9a25a23bd53a6224acd725b713c5f226b0"
-      },
       // Removed failing custom route; workers.dev preview remains active
       // "routes": [
       //   {

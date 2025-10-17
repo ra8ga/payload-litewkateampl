@@ -60,3 +60,13 @@ Poniżej znajdziesz sprawdzoną (wzorową) procedurę wdrożenia aplikacji `payl
 ---
 
 Lokalizacja tego pliku: `/Users/rafalfurmaga/spottedx-fe/apps/payload-litewkateampl/docs/deployment.md`.
+
+## Po deployu: Smoke test
+
+- Automatyczny smoke test uruchamia się po `yarn deploy:app`.
+- Ręcznie: `CLOUDFLARE_ENV=prod yarn smoke:test` lub `CLOUDFLARE_ENV=dev yarn smoke:test`.
+- Sprawdza:
+  - `GET /api/docs?limit=1` → oczekiwane `200`
+  - `GET /admin` → oczekiwane `200`
+- Zmienna `SMOKE_BASE` pozwala przetestować alternatywny host:
+  - Przykład: `SMOKE_BASE=https://twoj-host.example.com CLOUDFLARE_ENV=prod yarn smoke:test`
