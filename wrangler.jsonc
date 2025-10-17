@@ -47,6 +47,27 @@
           "bucket_name": "payload-litewkateampl"
         }
       ]
+    },
+    "prod": {
+      "name": "payload-litewkateampl-prod",
+      "vars": {
+        "PAYLOAD_SECRET": "ignore"
+      },
+      "d1_databases": [
+        {
+          "binding": "D1",
+          "database_id": "017ab6aa-526e-4e10-8cca-e5624874d2ed",
+          "database_name": "payload-litewkateampl",
+          "remote": true
+        }
+      ],
+      "services": [],
+      "r2_buckets": [
+        {
+          "binding": "R2",
+          "bucket_name": "payload-litewkateampl"
+        }
+      ]
     }
   }
 }
