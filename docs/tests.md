@@ -11,7 +11,7 @@ Celem testów jest szybka i wiarygodna weryfikacja kluczowych funkcji aplikacji 
   - Akceptacja: dopuszczalne redirecty `302`, `401` dla nieautoryzowanego `/api/users/me`, `404` dla GraphQL Playground w produkcji
 
 - Smoke (Vitest)
-  - Plik: `tests/smoke/smoke.spec.ts`
+  - Plik: `tests/smoke.spec.ts`
   - Cel: standaryzowana wersja smoke dla CI oraz lokalnego uruchamiania
   - Bezpośrednie wywołania HTTP do hosta (konfigurowalnego przez `SMOKE_BASE`/`CLOUDFLARE_ENV`)
   - Sprawdza te same ścieżki co wersja bash; w `/admin/login` ostrzeżenia dla tekstów `email`/`password` (UI może być renderowane po stronie klienta)
@@ -55,7 +55,7 @@ Celem testów jest szybka i wiarygodna weryfikacja kluczowych funkcji aplikacji 
 
 ## Struktura katalogów
 
-- `tests/smoke/smoke.spec.ts` — smoke przez Vitest
+- `tests/smoke.spec.ts` — smoke przez Vitest
 - `tests/int/**/*.int.spec.ts` — testy integracyjne (Payload lokalnie)
 - `tests/e2e/**/*.spec.ts` — UI/E2E (Playwright)
 - `scripts/smoke.sh` — smoke po-deploy (bash)
@@ -84,7 +84,7 @@ Lokalizacja: `/Users/rafalfurmaga/spottedx-fe/apps/payload-litewkateampl/docs/te
 
 ## Upload (smoke przez Vitest)
 
-- Plik testu: `tests/smoke/upload.spec.ts`
+- Plik testu: `tests/upload.spec.ts`
 - Wymaga ustawienia zmiennych środowiskowych:
   - `SMOKE_EMAIL` — email użytkownika z uprawnieniami do uploadu
   - `SMOKE_PASSWORD` — hasło

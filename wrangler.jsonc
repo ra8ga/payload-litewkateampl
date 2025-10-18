@@ -43,7 +43,7 @@
       "r2_buckets": [
         {
           "binding": "R2",
-          "bucket_name": "payload-litewkateampl",
+          "bucket_name": "payload-litewkateampl-dev",
           "jurisdiction": "eu"
         }
       ]
