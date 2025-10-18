@@ -9,6 +9,7 @@ Spis treści dokumentacji (apps/payload-litewkateampl/docs/):
 - `environments.md` — jak działa localhost vs Cloudflare (przegląd, komendy, różnice)
 - `migrations.md` — migracje D1 (komendy i dobre praktyki)
 - `tests.md` — podejście do testów (smoke bash, smoke Vitest, integracyjne, E2E Playwright) oraz jak uruchamiać
+- FAQ: zobacz `docs/environments.md#faq`
 
 ## Testy — podejście i uruchamianie
 

@@ -44,6 +44,7 @@ Poniżej znajdziesz sprawdzoną (wzorową) procedurę wdrożenia aplikacji `payl
 - [ ] Worker i Assets wdrożone: `deploy:app`
 - [ ] Panel admin oraz kolekcje Payload (np. `/admin/collections/<slug>`) zwracają `200` i brak błędów `SQLITE_ERROR`
 - [ ] `wrangler tail` nie pokazuje błędów wykonania
+- [ ] FAQ: `docs/environments.md#faq`
 
 ## Rozwiązywanie problemów
 
