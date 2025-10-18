@@ -111,6 +111,9 @@ fi
 DEFAULT_MANIFEST="$ROOT_DIR/scripts/r2-keys-$ENV.txt"
 R2_KEYS_MANIFEST="${R2_KEYS_MANIFEST:-$DEFAULT_MANIFEST}"
 
+# Global array for R2 keys
+keys=()
+
 # Funkcja: sprawdzenie statusu katalogu
 catalog_is_enabled() {
   local bucket="$1"
