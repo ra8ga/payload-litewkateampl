@@ -8,7 +8,7 @@
     "build": "cross-env NODE_OPTIONS=\"--no-deprecation --max-old-space-size=8000\" next build",
     "deploy": "yarn deploy:database && yarn deploy:app",
     "deploy:app": "opennextjs-cloudflare build --env=$CLOUDFLARE_ENV && opennextjs-cloudflare deploy --env=$CLOUDFLARE_ENV && yarn smoke:test",
-    "smoke:test": "bash -lc './scripts/smoke.sh'",
+    "smoke:test": "bash -lc './tests/smoke.sh'",
     "smoke:test:vitest": "vitest run tests/smoke.spec.ts --config ./tests/config/vitest.config.mts",
     "smoke:test:upload": "vitest run tests/upload.spec.ts --config ./tests/config/vitest.config.mts",
     "deploy:database": "cross-env NODE_ENV=production PAYLOAD_SECRET=ignore payload migrate && wrangler d1 execute D1 --command 'PRAGMA optimize' --env=$CLOUDFLARE_ENV --remote",

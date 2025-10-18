@@ -5,7 +5,7 @@ Celem testów jest szybka i wiarygodna weryfikacja kluczowych funkcji aplikacji 
 ## Warstwy testów
 
 - Smoke (bash)
-  - Skrypt: `scripts/smoke.sh`
+  - Skrypt: `tests/smoke.sh`
   - Cel: szybka weryfikacja po deployu (statusy, podstawowa treść)
   - Zakres: `/api/docs`, `/admin`, `/admin/login` (miękkie sprawdzenia tekstów), `/admin/collections/docs`, `/api/users/me`, `/api/graphql`, `/api/graphql-playground`
   - Akceptacja: dopuszczalne redirecty `302`, `401` dla nieautoryzowanego `/api/users/me`, `404` dla GraphQL Playground w produkcji
@@ -58,7 +58,7 @@ Celem testów jest szybka i wiarygodna weryfikacja kluczowych funkcji aplikacji 
 - `tests/smoke.spec.ts` — smoke przez Vitest
 - `tests/int/**/*.int.spec.ts` — testy integracyjne (Payload lokalnie)
 - `tests/e2e/**/*.spec.ts` — UI/E2E (Playwright)
-- `scripts/smoke.sh` — smoke po-deploy (bash)
+- `tests/smoke.sh` — smoke po-deploy (bash)
 
 ## Rekomendacje CI
 
@@ -75,7 +75,7 @@ Celem testów jest szybka i wiarygodna weryfikacja kluczowych funkcji aplikacji 
 
 ## Rozwiązywanie problemów
 
-- Błąd wrangler/esbuild w Vitest: uruchamiaj wyłącznie `tests/smoke/smoke.spec.ts` (`yarn smoke:test:vitest`), aby izolować smoke od integracji
+- Błąd wrangler/esbuild w Vitest: uruchamiaj wyłącznie `tests/smoke.spec.ts` (`yarn smoke:test:vitest`), aby izolować smoke od integracji
 - Brak elementów formularza w HTML na `/admin/login`: sprawdź przez Playwright (po hydratacji) lub pozostaw miękkie ostrzeżenia w smoke
 
 ---

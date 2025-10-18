@@ -10,7 +10,7 @@ Spis treści dokumentacji (apps/payload-litewkateampl/docs/):
 
 ## Testy — podejście i uruchamianie
 
-- Warstwy: smoke po-deploy (`scripts/smoke.sh`), smoke przez Vitest (`tests/smoke/smoke.spec.ts`), integracyjne (`tests/int/**`), E2E przez Playwright (`tests/e2e/**`).
+- Warstwy: smoke po-deploy (`tests/smoke.sh`), smoke przez Vitest (`tests/smoke.spec.ts`), integracyjne (`tests/int/**`), E2E przez Playwright (`tests/e2e/**`).
 - Uruchamianie:
   - Bash smoke: `CLOUDFLARE_ENV=prod yarn smoke:test`
   - Vitest smoke: `CLOUDFLARE_ENV=prod yarn smoke:test:vitest`
