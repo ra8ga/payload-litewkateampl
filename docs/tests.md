@@ -7,7 +7,7 @@ Celem testów jest szybka i wiarygodna weryfikacja kluczowych funkcji aplikacji 
 - Smoke (bash)
   - Skrypt: `tests/smoke.sh`
   - Cel: szybka weryfikacja po deployu (statusy, podstawowa treść)
-  - Zakres: `/api/docs`, `/admin`, `/admin/login` (miękkie sprawdzenia tekstów), `/admin/collections/docs`, `/api/users/me`, `/api/graphql`, `/api/graphql-playground`
+  - Zakres: `/api/<collection>`, `/admin`, `/admin/login` (miękkie sprawdzenia tekstów), `/admin/collections/<slug>`, `/api/users/me`, `/api/graphql`, `/api/graphql-playground`
   - Akceptacja: dopuszczalne redirecty `302`, `401` dla nieautoryzowanego `/api/users/me`, `404` dla GraphQL Playground w produkcji
 
 - Smoke (Vitest)

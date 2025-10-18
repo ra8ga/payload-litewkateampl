@@ -19,7 +19,7 @@ Ten folder zbiera ustalenia dot. migracji dla D1 używanej przez Payload.
 ## Dobre praktyki
 
 - Zmieniaj schemat kolekcji w kodzie (Payload), a następnie uruchamiaj `deploy:database`.
-- Po migracjach sprawdź `/admin/collections/docs` na środowisku docelowym (brak `SQLITE_ERROR`).
+- Po migracjach sprawdź panel admin i dowolną kolekcję (np. `/admin/collections/<slug>`) na środowisku docelowym (brak `SQLITE_ERROR`).
 - W CI nie uruchamiaj migracji na prod — tylko DEV/STAGE.
 
 ## Rozwiązywanie problemów
@@ -76,10 +76,10 @@ Ten folder zbiera ustalenia dot. migracji dla D1 używanej przez Payload.
   - `CLOUDFLARE_ENV=dev yarn preview`
   - `cross-env NODE_ENV=development PAYLOAD_SECRET=ignore payload migrate`
   - `wrangler d1 execute D1 --local --command 'PRAGMA optimize'`
-  - Weryfikacja: `/admin/collections/docs` na `http://localhost:8787`.
+  - Weryfikacja: panel admin i dowolna kolekcja (np. `/admin/collections/<slug>`) na `http://localhost:8787`.
 - Zdalna migracja DEV:
   - `CLOUDFLARE_ENV=dev yarn deploy:database`
-  - Weryfikacja: `curl -I https://payload-litewkateampl-dev.spottedx.workers.dev/admin/collections/docs` → `200` lub `302`.
+  - Weryfikacja: `curl -I https://payload-litewkateampl-dev.spottedx.workers.dev/admin/collections/<slug>` → `200` lub `302`.
 - Zdalna migracja PROD:
   - `wrangler secret put PAYLOAD_SECRET --env=prod`
   - `CLOUDFLARE_ENV=prod yarn deploy:database`

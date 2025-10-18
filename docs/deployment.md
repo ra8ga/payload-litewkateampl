@@ -20,7 +20,7 @@ Poniżej znajdziesz sprawdzoną (wzorową) procedurę wdrożenia aplikacji `payl
    - `CLOUDFLARE_ENV=dev yarn deploy:app`
    - Alternatywnie: `CLOUDFLARE_ENV=dev yarn deploy`
 4. Zweryfikuj działanie:
-   - `curl -I https://payload-litewkateampl-dev.spottedx.workers.dev/admin/collections/docs` → oczekiwane `200`
+   - `curl -I https://payload-litewkateampl-dev.spottedx.workers.dev/admin/collections/<slug>` → oczekiwane `200` (dla dowolnej kolekcji)
    - Sprawdź też: `/admin`, `/admin/login`, `/api/users/me`
 5. Podejrzyj logi błędów (opcjonalnie):
    - `wrangler tail payload-litewkateampl --env=dev --status=error`
@@ -42,7 +42,7 @@ Poniżej znajdziesz sprawdzoną (wzorową) procedurę wdrożenia aplikacji `payl
 - [ ] `wrangler.jsonc` zawiera `env.dev` i/lub `env.prod`
 - [ ] D1 (migracje) wdrożone: `deploy:database`
 - [ ] Worker i Assets wdrożone: `deploy:app`
-- [ ] `admin/collections/docs` zwraca `200` i nie ma błędów `SQLITE_ERROR`
+- [ ] Panel admin oraz kolekcje Payload (np. `/admin/collections/<slug>`) zwracają `200` i brak błędów `SQLITE_ERROR`
 - [ ] `wrangler tail` nie pokazuje błędów wykonania
 
 ## Rozwiązywanie problemów
@@ -55,7 +55,7 @@ Poniżej znajdziesz sprawdzoną (wzorową) procedurę wdrożenia aplikacji `payl
 ## Lokalne preview (pomocniczo)
 
 - `CLOUDFLARE_ENV=dev yarn preview` uruchamia lokalny serwer (OpenNext) pod `http://localhost:8787`.
-- Wejście na `/admin/collections/docs` pozwala szybko zweryfikować UI i DB.
+- Wejście na `/admin/collections/<slug>` (dowolna kolekcja) pozwala szybko zweryfikować UI i DB.
 
 ---
 
@@ -89,7 +89,7 @@ Lokalizacja tego pliku: `/Users/rafalfurmaga/spottedx-fe/apps/payload-litewkatea
 - Więcej szczegółów: zobacz `./migrations.md`.
 - Porównanie środowisk (localhost vs Cloudflare): zobacz `./environments.md`.
 - Binding: `wrangler.jsonc -> env.<env>.d1_databases[]` z `binding: "D1"`.
-- Debug: sprawdzaj `/admin/collections/docs` po migracjach (brak `SQLITE_ERROR`).
+- Debug: sprawdzaj panel admin i dowolną kolekcję (np. `/admin/collections/<slug>`) po migracjach (brak `SQLITE_ERROR`).
 
 ### R2 — bucket (EU)
 - Nazwa: `payload-litewkateampl` (binding `R2`).
