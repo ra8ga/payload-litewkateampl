@@ -115,3 +115,26 @@ Ten dokument wyjaśnia różnice między uruchomieniem aplikacji lokalnie (local
 - Deploy i checklista: `./deployment.md`.
 - Migracje i typowe błędy: `./migrations.md`.
 - Testy i troubleshoot: `./tests.md`.
+
+## FAQ
+
+- Dlaczego GraphQL Playground zwraca `404` w produkcji?
+  - W prod Playground bywa wyłączony; `404` jest akceptowalne. Korzystaj z `/api/graphql` i własnych klient&oacute;w (np. Insomnia, Postman).
+- Czy Localhost (`yarn dev`) ma dostęp do D1/R2?
+  - Nie. Dev server Next działa na Node bez binding&oacute;w Workers. Użyj `yarn preview` lub wdrożenie na Cloudflare.
+- Czy lokalny preview korzysta z lokalnej bazy?
+  - Preview korzysta ze zdalnych binding&oacute;w skonfigurowanych w `wrangler.jsonc` zgodnie z `CLOUDFLARE_ENV`. To realistyczna symulacja Workera.
+- Gdzie trzymamy sekrety?
+  - Produkcja: w Workerze przez `wrangler secret put ...` per `--env`. Lokalnie/testy: tymczasowe wartości lub `.env.test` (nie commitujemy realnych sekret&oacute;w).
+- Jak sprawdzić, czy migracje zadziałały?
+  - Po migracji wejdź na panel admin i dowolną kolekcję: `/admin`, `/admin/collections/<slug>`. Brak `SQLITE_ERROR` oznacza poprawę. Sprawdzaj też `wrangler tail`.
+- Jak wybrać kolekcję do szybkiej weryfikacji?
+  - Dowolny `slug` zdefiniowany w `src/payload.config.ts`. W panelu admin pojawia się lista kolekcji; wybierz tę, kt&oacute;rą modyfikowałeś.
+- „This Worker does not exist” w `wrangler tail` – co robić?
+  - Użyj bazowej nazwy Workera i poprawnego `--env`. Zweryfikuj `wrangler.jsonc` i istniejące środowiska.
+- Jak sprawdzić jurysdykcję bucketa R2?
+  - `wrangler r2 bucket info payload-litewkateampl --jurisdiction eu --json` → oczekiwane `location: "EEUR"`.
+- Czy można używać `.env.test` w produkcji?
+  - Nie. `.env.test` służy tylko do lokalnych/CI test&oacute;w. Produkcja korzysta z sekret&oacute;w Workera.
+- Jak wskazać host dla smoke test&oacute;w?
+  - Użyj `SMOKE_BASE` (pełny URL) lub `CLOUDFLARE_ENV` (wybierze domyślny host workers.dev).
