@@ -188,6 +188,21 @@ read_keys_file() {
   done < "$file"
 }
 
+# Helper: get bucket object_count via Wrangler
+bucket_object_count() {
+  local bucket="$1"
+  local out
+  if out=$(CLOUDFLARE_ACCOUNT_ID="$ACCOUNT_ID" npx wrangler r2 bucket info "$bucket" 2>&1); then
+    local count
+    count=$(echo "$out" | awk -F': +' '/object_count/{print $2}' | tr -d '[:space:]')
+    if [[ "$count" =~ ^[0-9]+$ ]]; then
+      echo "$count"
+      return 0
+    fi
+  fi
+  return 1
+}
+
 # Strategia listowania: 1) manifest, 2) S3 (jeśli dostępne), 3) SQL (gdy katalog włączony), 4) fallback
 KEYS_LIST_FILE="$R2_DIR/.keys.manifest"
 if [[ -f "$R2_KEYS_MANIFEST" ]]; then
@@ -258,7 +273,12 @@ else
           fi
         fi
       else
-        echo "[R2] Brak listowania kluczy (S3/SQL). Dodaj manifest lub włącz Data Catalog."
+        # If bucket appears empty, treat as successful no-op
+        if out=$(bucket_object_count "$R2_BUCKET") && [[ "$out" == "0" ]]; then
+          echo "[R2] Bucket '$R2_BUCKET' is empty; skipping object download."
+        else
+          echo "[R2] Brak listowania kluczy (S3/SQL). Dodaj manifest lub włącz Data Catalog."
+        fi
       fi
     fi
   fi
