@@ -87,6 +87,7 @@ Lokalizacja tego pliku: `/Users/rafalfurmaga/spottedx-fe/apps/payload-litewkatea
 ### D1 — baza danych
 - Migracje: `CLOUDFLARE_ENV=<env> yarn deploy:database` (wykonuje `payload migrate` i `wrangler d1 execute D1 'PRAGMA optimize'`).
 - Więcej szczegółów: zobacz `./migrations.md`.
+- Porównanie środowisk (localhost vs Cloudflare): zobacz `./environments.md`.
 - Binding: `wrangler.jsonc -> env.<env>.d1_databases[]` z `binding: "D1"`.
 - Debug: sprawdzaj `/admin/collections/docs` po migracjach (brak `SQLITE_ERROR`).
 
