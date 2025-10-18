@@ -6,6 +6,7 @@ Spis treści dokumentacji (apps/payload-litewkateampl/docs/):
 
 - `collections.md` — opis kolekcji i pól w Payload (Docs, Media, Users)
 - `deployment.md` — instrukcja wdrożenia aplikacji na Cloudflare Workers (D1, R2, Assets)
+- `migrations.md` — migracje D1 (komendy i dobre praktyki)
 - `tests.md` — podejście do testów (smoke bash, smoke Vitest, integracyjne, E2E Playwright) oraz jak uruchamiać
 
 ## Testy — podejście i uruchamianie
