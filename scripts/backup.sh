@@ -227,8 +227,8 @@ if [[ -f "$R2_KEYS_MANIFEST" ]]; then
   echo "[R2] Używam manifestu kluczy: $R2_KEYS_MANIFEST"
   cp "$R2_KEYS_MANIFEST" "$KEYS_LIST_FILE"
   read_keys_file "$KEYS_LIST_FILE"
-  echo "[R2] Downloading ${#keys[@]} objects (manifest)..."
-  for k in "${keys[@]}"; do
+  echo "[R2] Downloading ${#keys[@]:-0} objects (manifest)..."
+  for k in "${keys[@]-}"; do
     [[ -z "$k" ]] && continue
     if [[ "$k" == "${R2_BUCKET}/"* ]]; then
       safe_k="${k#${R2_BUCKET}/}"
@@ -243,8 +243,8 @@ else
     echo "[R2] Generuję listę kluczy przez S3 API..."
     if list_keys_s3 "$R2_BUCKET" "$KEYS_LIST_FILE" ""; then
       read_keys_file "$KEYS_LIST_FILE"
-      echo "[R2] Downloading ${#keys[@]} objects (S3)..."
-      for k in "${keys[@]}"; do
+      echo "[R2] Downloading ${#keys[@]:-0} objects (S3)..."
+      for k in "${keys[@]-}"; do
         [[ -z "$k" ]] && continue
         if [[ "$k" == "${R2_BUCKET}/"* ]]; then
           safe_k="${k#${R2_BUCKET}/}"
@@ -277,8 +277,8 @@ else
           if [[ ${#keys[@]} -eq 0 ]]; then
             echo "[R2] Brak kluczy do pobrania (SQL)."
           else
-            echo "[R2] Downloading ${#keys[@]} objects (SQL)..."
-            for k in "${keys[@]}"; do
+            echo "[R2] Downloading ${#keys[@]:-0} objects (SQL)..."
+            for k in "${keys[@]-}"; do
               [[ -z "$k" ]] && continue
               if [[ "$k" == "${R2_BUCKET}/"* ]]; then
                 safe_k="${k#${R2_BUCKET}/}"
