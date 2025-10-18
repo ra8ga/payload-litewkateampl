@@ -14,3 +14,8 @@
 ## docs
 - `slug: 'docs'`, publiczny odczyt (`access.read: () => true`).
 - Pola: `title: text (required)`, `description: textarea`, `file: upload (relationTo: 'media', required)`.
+
+## posts
+- `slug: 'posts'`, publiczny odczyt (`access.read: () => true`).
+- Pola: `title: text (required)`, `slug: text (unique)`, `status: select ('draft'|'published')`, `publishedAt: date`, `content: richText`, `image: upload (relationTo: 'media')`, `author: relationship (relationTo: 'users')`.
+- Hooki: generowanie `slug` z `title`; ustawianie `publishedAt` przy statusie `published`.
