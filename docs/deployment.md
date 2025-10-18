@@ -122,3 +122,16 @@ Lokalizacja tego pliku: `/Users/rafalfurmaga/spottedx-fe/apps/payload-litewkatea
 - Wymagane: `CLOUDFLARE_ACCOUNT_ID` i `R2_PRIMARY_BUCKET_<ENV>` w `.env.backup` lub otoczeniu.
 - Listowanie obiektów: próba przez `wrangler r2 sql query` (open‑beta). Jeśli lista nie działa, włącz katalog: `wrangler r2 bucket catalog enable <bucket>`, albo podaj ręcznie listę kluczy/prefiksów.
 - Uwaga: `rclone` został usunięty z repo i nie jest używany.
+
+## Rozwiązywanie problemów — uzupełnienie (richText)
+
+- `500 Internal Server Error` na `/api/<slug>` po seedzie:
+  - Sprawdź, czy pola `richText` mają poprawny JSON (Lexical). Zapis zwykłego tekstu do kolumny `content` powoduje błąd parsera (`SyntaxError: ... is not valid JSON`).
+  - Rozwiązanie: dodaj migrację „patch” aktualizującą `content` na JSON (przykład: `src/migrations/20251018_160150_patch_posts_content_json.ts`).
+  - Weryfikacja: `curl -i https://payload-litewkateampl-<env>.spottedx.workers.dev/api/posts` → oczekiwane `200` i lista dokumentów.
+
+## Wnioski (case: posts)
+
+- Migracje D1 muszą być uruchomione na docelowym env przed weryfikacją `/api/<slug>`/panelu.
+- Seedy dla `richText` tylko jako JSON (Lexical). W razie pomyłki zastosuj patch migrację.
+- Seedy na prod w tym projekcie pozostają (2 przykładowe rekordy) — jeśli niechciane, zaplanuj migrację cleanup.

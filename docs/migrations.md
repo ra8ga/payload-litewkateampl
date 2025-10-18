@@ -84,3 +84,42 @@ Ten folder zbiera ustalenia dot. migracji dla D1 używanej przez Payload.
   - `wrangler secret put PAYLOAD_SECRET --env=prod`
   - `CLOUDFLARE_ENV=prod yarn deploy:database`
   - Weryfikacja jak wyżej na hostname prod.
+
+## RichText (Lexical) — seedy muszą być JSON
+
+- Pole `richText` w Payload (Lexical) musi zawierać poprawny JSON (string). Wstawienie zwykłego tekstu skutkuje błędem `500 Internal Server Error` oraz komunikatem w logach: `SyntaxError: ... is not valid JSON`.
+- Przy seedzie używaj `JSON.stringify(...)` i przekazuj wartość jako parametr do zapytania SQL (np. przez `db.run(sql\`... ${json} ...\`)`). Nie zapisuj czystego tekstu do kolumny `content`.
+- Minimalna struktura Lexical (przykład):
+
+```json
+{
+  "root": {
+    "type": "root",
+    "version": 1,
+    "format": "",
+    "indent": 0,
+    "children": [
+      {
+        "type": "paragraph",
+        "version": 1,
+        "format": "",
+        "indent": 0,
+        "children": [
+          { "type": "text", "version": 1, "text": "Przykładowy tekst.", "detail": 0, "format": 0 }
+        ]
+      }
+    ]
+  }
+}
+```
+
+- Przykładowa migracja „patch” aktualizująca `content` na poprawny JSON (wykorzystana w case `posts`): `src/migrations/20251018_160150_patch_posts_content_json.ts`.
+
+## Wnioski (case: posts)
+
+- Dodanie nowej kolekcji wymaga uruchomienia migracji D1 na właściwym środowisku (`CLOUDFLARE_ENV=dev|prod yarn deploy:database`) — inaczej `/api/<slug>` zwróci `SQLITE_ERROR` / `no such table`.
+- Seedy dla `richText` muszą być JSON (Lexical). Tekst wstawiony bez JSON powoduje 500 oraz błąd parsera.
+- Preview lokalny używa bindingów do D1 — jeżeli wskazuje na zdalne env (dev/prod), migracje muszą być zastosowane tam.
+- Seedy na produkcji: świadomie akceptuj (w tym projekcie pozostawiamy 2 rekordy przykładowe). W razie potrzeby przewidź migracje „cleanup”.
+- Weryfikacja po migracjach: sprawdź `/api/<slug>` oraz `/admin/collections/<slug>`. Przykład:
+  - `curl -i https://payload-litewkateampl-dev.spottedx.workers.dev/api/posts` → oczekiwany `200` i lista.
