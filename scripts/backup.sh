@@ -97,6 +97,10 @@ if [[ -z "$ACCOUNT_ID" ]]; then
 fi
 
 JURISDICTION="${R2_JURISDICTION:-eu}"
+# Derive S3 endpoint for jurisdiction if not provided
+if [[ -z "${R2_S3_ENDPOINT:-}" && -n "${ACCOUNT_ID:-}" && -n "${JURISDICTION:-}" ]]; then
+  R2_S3_ENDPOINT="https://${ACCOUNT_ID}.${JURISDICTION}.r2.cloudflarestorage.com"
+fi
 if [[ "$DRY_RUN" == true ]]; then
   echo "[DRY-RUN] R2 mirror via wrangler: bucket=$R2_BUCKET -> $R2_DIR"
 else
