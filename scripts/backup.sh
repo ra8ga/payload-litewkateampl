@@ -165,7 +165,18 @@ list_keys_s3() {
     echo "(dry-run)" > "$out_file"
     return 0
   fi
-  NODE_OPTIONS="" node "$SCRIPT_DIR/list-s3-keys.mjs" "$bucket" "$out_file" "$prefix"
+  if NODE_OPTIONS="" node "$SCRIPT_DIR/list-s3-keys.mjs" "$bucket" "$out_file" "$prefix"; then
+    return 0
+  else
+    local alt_endpoint="https://${ACCOUNT_ID}.${JURISDICTION}.r2.cloudflarestorage.com"
+    if [[ -n "${ACCOUNT_ID:-}" && -n "${JURISDICTION:-}" ]]; then
+      echo "[R2] S3 list failed. Retrying with jurisdiction endpoint: $alt_endpoint"
+      R2_S3_ENDPOINT="$alt_endpoint" NODE_OPTIONS="" node "$SCRIPT_DIR/list-s3-keys.mjs" "$bucket" "$out_file" "$prefix"
+      return $?
+    else
+      return 1
+    fi
+  fi
 }
 
 # Funkcja: pobierz pojedynczy obiekt
