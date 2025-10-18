@@ -48,6 +48,7 @@ TS=$(date -u +'%Y%m%d-%H%M%S')
 # Ścieżki
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
+REPO_ROOT="$(cd "$ROOT_DIR/../.." && pwd)"
 ENV_FILE="$ROOT_DIR/.env.backup"
 BACKUPS_DIR_DEFAULT="$ROOT_DIR/backups"
 
@@ -121,6 +122,8 @@ R2_KEYS_MANIFEST="${R2_KEYS_MANIFEST:-$DEFAULT_MANIFEST}"
 
 # Global array for R2 keys
 keys=()
+# Flaga: czy wygenerowano manifest (aby pominąć S3/SQL)
+skip_s3_sql=false
 
 # Funkcja: sprawdzenie statusu katalogu
 catalog_is_enabled() {
@@ -151,7 +154,7 @@ list_keys_sql() {
   fi
   if [[ "$DRY_RUN" == true ]]; then
     echo "[DRY-RUN] SQL query (warehouse=$warehouse): $query"
-    echo "(dry-run)" > "$out_file"
+    : > "$out_file"
     return 0
   fi
   if WRANGLER_R2_SQL_AUTH_TOKEN="${WRANGLER_R2_SQL_AUTH_TOKEN:-${CLOUDFLARE_API_TOKEN:-}}" CLOUDFLARE_ACCOUNT_ID="$ACCOUNT_ID" npx wrangler r2 sql query "$warehouse" "$query" > "$out_file"; then
@@ -172,22 +175,36 @@ list_keys_s3() {
     return 1
   fi
   if [[ "$DRY_RUN" == true ]]; then
-    echo "[DRY-RUN] S3 list: bucket=$bucket prefix='$prefix' -> $out_file"
-    echo "(dry-run)" > "$out_file"
+    echo "[DRY-RUN] S3 list: bucket=$bucket prefix='$prefix' -> $out_file (no keys written)"
+    : > "$out_file"
     return 0
   fi
-  if NODE_OPTIONS="" node "$SCRIPT_DIR/list-s3-keys.mjs" "$bucket" "$out_file" "$prefix"; then
+  if NODE_OPTIONS="" node "$REPO_ROOT/scripts/r2/list-keys.mjs" "$bucket" "$out_file" "$prefix"; then
     return 0
   else
     local alt_endpoint="https://${ACCOUNT_ID}.${JURISDICTION}.r2.cloudflarestorage.com"
     if [[ -n "${ACCOUNT_ID:-}" && -n "${JURISDICTION:-}" ]]; then
       echo "[R2] S3 list failed. Retrying with jurisdiction endpoint: $alt_endpoint"
-      R2_S3_ENDPOINT="$alt_endpoint" NODE_OPTIONS="" node "$SCRIPT_DIR/list-s3-keys.mjs" "$bucket" "$out_file" "$prefix"
+      R2_S3_ENDPOINT="$alt_endpoint" NODE_OPTIONS="" node "$REPO_ROOT/scripts/r2/list-keys.mjs" "$bucket" "$out_file" "$prefix"
       return $?
     else
       return 1
     fi
   fi
+}
+
+# Funkcja: generuj manifest przez helper (tekst domyślnie)
+generate_keys_manifest() {
+  local bucket="$1"; shift
+  local out_file="$1"; shift
+  local prefix="$1"; shift || true
+  local helper="$REPO_ROOT/scripts/r2/generate-manifest.mjs"
+  if [[ "$DRY_RUN" == true ]]; then
+    echo "[DRY-RUN] generate-manifest: bucket=$bucket prefix='$prefix' -> $out_file (empty manifest)"
+    : > "$out_file"
+    return 0
+  fi
+  NODE_OPTIONS="" node "$helper" "$bucket" "$out_file" "$prefix"
 }
 
 # Funkcja: pobierz pojedynczy obiekt
@@ -247,7 +264,30 @@ if [[ -f "$R2_KEYS_MANIFEST" ]]; then
     get_object "$R2_BUCKET" "$safe_k" "$dest_path"
   done
 else
-  if [[ -n "${R2_ACCESS_KEY_ID:-}" && -n "${R2_SECRET_ACCESS_KEY:-}" && -n "${R2_S3_ENDPOINT:-}" ]]; then
+  # Opcjonalnie użyj generatora manifestu na początku
+  if [[ "${R2_GENERATE_MANIFEST:-}" == "true" ]]; then
+    echo "[R2] Generuję listę kluczy przez generate-manifest.mjs..."
+    if generate_keys_manifest "$R2_BUCKET" "$KEYS_LIST_FILE" ""; then
+      read_keys_file "$KEYS_LIST_FILE"
+      echo "[R2] Downloading ${#keys[@]:-0} objects (manifest/generated)..."
+      for k in "${keys[@]-}"; do
+        [[ -z "$k" ]] && continue
+        if [[ "$k" == "${R2_BUCKET}/"* ]]; then
+          safe_k="${k#${R2_BUCKET}/}"
+        else
+          safe_k="$k"
+        fi
+        dest_path="$R2_DIR/$safe_k"
+        get_object "$R2_BUCKET" "$safe_k" "$dest_path"
+      done
+      skip_s3_sql=true
+    else
+      echo "[R2] generate-manifest nie powiodło się; przechodzę do S3/SQL."
+    fi
+  fi
+
+  # Jeśli nie użyto generatora, kontynuuj S3/SQL
+  if [[ "$skip_s3_sql" != "true" && -n "${R2_ACCESS_KEY_ID:-}" && -n "${R2_SECRET_ACCESS_KEY:-}" && -n "${R2_S3_ENDPOINT:-}" ]]; then
     echo "[R2] Generuję listę kluczy przez S3 API..."
     if list_keys_s3 "$R2_BUCKET" "$KEYS_LIST_FILE" ""; then
       read_keys_file "$KEYS_LIST_FILE"

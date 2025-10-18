@@ -70,6 +70,8 @@ export interface Config {
     users: User;
     media: Media;
     docs: Doc;
+    posts: Post;
+    initiatives: Initiative;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
@@ -79,6 +81,8 @@ export interface Config {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     docs: DocsSelect<false> | DocsSelect<true>;
+    posts: PostsSelect<false> | PostsSelect<true>;
+    initiatives: InitiativesSelect<false> | InitiativesSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -170,6 +174,113 @@ export interface Doc {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "posts".
+ */
+export interface Post {
+  id: number;
+  title: string;
+  /**
+   * Unikalny slug (generowany z tytułu, jeśli pusty)
+   */
+  slug: string;
+  status?: ('draft' | 'published') | null;
+  /**
+   * Data publikacji (ustawiana automatycznie przy Published)
+   */
+  publishedAt?: string | null;
+  content?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  /**
+   * Grafika wyróżniająca (opcjonalna)
+   */
+  image?: (number | null) | Media;
+  /**
+   * Autor posta (użytkownik)
+   */
+  author?: (number | null) | User;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "initiatives".
+ */
+export interface Initiative {
+  id: number;
+  title: string;
+  /**
+   * Unikalny slug (generowany z tytułu, jeśli pusty)
+   */
+  slug: string;
+  excerpt?: string | null;
+  content?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  /**
+   * Galeria zdjęć dla inicjatywy
+   */
+  gallery?:
+    | {
+        /**
+         * Zdjęcie w galerii
+         */
+        image?: (number | null) | Media;
+        /**
+         * Podpis zdjęcia (opcjonalnie)
+         */
+        caption?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Tagi inicjatywy (np. #Pomoc, #Sprzęt)
+   */
+  tags?:
+    | {
+        tag: string;
+        id?: string | null;
+      }[]
+    | null;
+  featured?: boolean | null;
+  /**
+   * Kolejność na liście; wyższa wartość = wyżej
+   */
+  order?: number | null;
+  status?: ('draft' | 'published') | null;
+  /**
+   * Data publikacji (ustawiana automatycznie przy Published)
+   */
+  publishedAt?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-locked-documents".
  */
 export interface PayloadLockedDocument {
@@ -186,6 +297,14 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'docs';
         value: number | Doc;
+      } | null)
+    | ({
+        relationTo: 'posts';
+        value: number | Post;
+      } | null)
+    | ({
+        relationTo: 'initiatives';
+        value: number | Initiative;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -275,6 +394,50 @@ export interface DocsSelect<T extends boolean = true> {
   title?: T;
   description?: T;
   file?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "posts_select".
+ */
+export interface PostsSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  status?: T;
+  publishedAt?: T;
+  content?: T;
+  image?: T;
+  author?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "initiatives_select".
+ */
+export interface InitiativesSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  excerpt?: T;
+  content?: T;
+  gallery?:
+    | T
+    | {
+        image?: T;
+        caption?: T;
+        id?: T;
+      };
+  tags?:
+    | T
+    | {
+        tag?: T;
+        id?: T;
+      };
+  featured?: T;
+  order?: T;
+  status?: T;
+  publishedAt?: T;
   updatedAt?: T;
   createdAt?: T;
 }

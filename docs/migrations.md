@@ -2,6 +2,19 @@
 
 Ten folder zbiera ustalenia dot. migracji dla D1 używanej przez Payload.
 
+### Struktura folderów (src/migrations)
+- `core/` — fundament: users, media, locked, preferences, migrations
+- `docs/` — kolekcja docs
+- `posts/` — kolekcja posts (schema, seed, patch)
+- `initiatives/` — kolekcja initiatives (schema + arrays)
+- `index.ts` — agregator migracji (importuje wszystkie pliki z podfolderów)
+
+### Przebieg `deploy:database` (skrót)
+1) `payload migrate` — generuje/aktualizuje schemat DB na podstawie kolekcji (D1)
+2) `wrangler d1 execute D1 --command 'PRAGMA optimize' --env=$CLOUDFLARE_ENV --remote` — optymalizacja indeksów
+3) Weryfikacja: sprawdź `/admin/collections/<slug>` oraz `curl -I https://payload-litewkateampl-<env>.spottedx.workers.dev/api/<slug>`
+
+
 ## Jak uruchamiać migracje
 
 - Zalecana komenda (wybiera środowisko przez `CLOUDFLARE_ENV`):
