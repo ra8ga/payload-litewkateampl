@@ -27,7 +27,8 @@
     "test:ci": "yarn test:int && yarn smoke:test:vitest && yarn test:e2e",
     "test:smoke": "yarn smoke:test:vitest",
     "test:e2e": "cross-env NODE_OPTIONS=\"--no-deprecation --no-experimental-strip-types\" playwright test -c ./tests/e2e/playwright.config.ts",
-    "test:int": "cross-env NODE_OPTIONS=--no-deprecation vitest run --config ./tests/config/vitest.config.mts"
+    "test:int": "cross-env NODE_OPTIONS=--no-deprecation vitest run --config ./tests/config/vitest.config.mts",
+    "knip": "knip"
   },
   "dependencies": {
     "@opennextjs/cloudflare": "^1.6.5",
@@ -54,6 +55,7 @@
     "eslint": "^9.16.0",
     "eslint-config-next": "15.4.4",
     "jsdom": "26.1.0",
+    "knip": "^5.65.0",
     "playwright": "1.54.1",
     "playwright-core": "1.54.1",
     "prettier": "^3.4.2",
