@@ -113,3 +113,12 @@ Lokalizacja tego pliku: `/Users/rafalfurmaga/spottedx-fe/apps/payload-litewkatea
   - Oczekiwane wyniki:
     - `POST /api/media` → `200/201`, odpowiedź zawiera utworzony dokument z `id`
     - `GET /api/media/:id` → `200` i `filename` (lub `file.filename`)
+
+## Backups (wrangler‑only)
+
+- Skrypt: `bash scripts/backup.sh [--dry-run] dev|prod`.
+- D1: eksport do `backups/d1/<env>/<timestamp>.sql.gz`.
+- R2: mirror do `backups/r2/<env>/` przez `wrangler r2 object get` (bez S3 tokenów).
+- Wymagane: `CLOUDFLARE_ACCOUNT_ID` i `R2_PRIMARY_BUCKET_<ENV>` w `.env.backup` lub otoczeniu.
+- Listowanie obiektów: próba przez `wrangler r2 sql query` (open‑beta). Jeśli lista nie działa, włącz katalog: `wrangler r2 bucket catalog enable <bucket>`, albo podaj ręcznie listę kluczy/prefiksów.
+- Uwaga: `rclone` został usunięty z repo i nie jest używany.

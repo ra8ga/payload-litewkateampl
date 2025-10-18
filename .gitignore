@@ -55,3 +55,8 @@ node_modules/
 
 # Local test env
 .env.test
+
+# Backups & local backup env
+backups/
+.env.backup
+scripts/rclone.conf
