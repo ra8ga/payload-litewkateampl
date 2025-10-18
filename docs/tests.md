@@ -77,6 +77,7 @@ Celem testów jest szybka i wiarygodna weryfikacja kluczowych funkcji aplikacji 
 
 - Błąd wrangler/esbuild w Vitest: uruchamiaj wyłącznie `tests/smoke.spec.ts` (`yarn smoke:test:vitest`), aby izolować smoke od integracji
 - Brak elementów formularza w HTML na `/admin/login`: sprawdź przez Playwright (po hydratacji) lub pozostaw miękkie ostrzeżenia w smoke
+- Problemy z migracjami D1 (tabele, klucze, sekrety): zobacz `./migrations.md` — różnice lokalne/zdalne i typowe błędy
 
 ---
 
