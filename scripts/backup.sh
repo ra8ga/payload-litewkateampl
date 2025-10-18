@@ -15,6 +15,14 @@ usage() {
 
 DRY_RUN=false
 ENV="${CLOUDFARE_ENV:-${CLOUDFLARE_ENV:-}}"  # fallback do ENV z otoczenia (poprawione)
+# Ostrzeżenie o literówce: CLOUDFARE_ENV
+if [ "${CLOUDFARE_ENV+x}" = x ]; then
+  if [ "${CLOUDFLARE_ENV+x}" = x ]; then
+    echo "UWAGA: ustawiono zarówno CLOUDFARE_ENV (literówka) jak i CLOUDFLARE_ENV; używam CLOUDFARE_ENV przez priorytet. Używaj wyłącznie poprawnej CLOUDFLARE_ENV." >&2
+  else
+    echo "UWAGA: wykryto CLOUDFARE_ENV (literówka). Preferuj CLOUDFLARE_ENV." >&2
+  fi
+fi
 
 # Parsowanie argumentów
 while [[ $# -gt 0 ]]; do

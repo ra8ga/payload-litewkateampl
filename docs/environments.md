@@ -138,3 +138,17 @@ Ten dokument wyjaśnia różnice między uruchomieniem aplikacji lokalnie (local
   - Nie. `.env.test` służy tylko do lokalnych/CI test&oacute;w. Produkcja korzysta z sekret&oacute;w Workera.
 - Jak wskazać host dla smoke test&oacute;w?
   - Użyj `SMOKE_BASE` (pełny URL) lub `CLOUDFLARE_ENV` (wybierze domyślny host workers.dev).
+
+## Remote bindings w testach/preview (NODE_ENV vs CLOUDFLARE_ENV)
+- `CLOUDFLARE_ENV` wybiera z którego środowiska Cloudflare (`env.dev`, `env.prod`) pobierane są bindingi `D1` i `R2`.
+- `NODE_ENV` steruje, czy bindingi są pobierane zdalnie przez wranglera:
+  - `NODE_ENV=production` → włączone `remoteBindings` (wrangler). Dzieje się automatycznie w `yarn preview` oraz po zbudowaniu aplikacji; testy/preview korzystają ze zdalnych `D1/R2`.
+  - `NODE_ENV=development`/`test` → `remoteBindings` wyłączone. Tryb Node bez Workers — dobre dla czystych testów integracyjnych, bez dotykania zdalnego D1/R2.
+- Jak to działa w `src/payload.config.ts`:
+  - Gdy wykryta jest komenda `generate`/`migrate` lub `NODE_ENV !== 'production'`, aplikacja ładuje kontekst z wranglera (`getPlatformProxy`) z `environment: CLOUDFLARE_ENV` i `experimental.remoteBindings` ustawionym zgodnie z `NODE_ENV`.
+  - W środowisku produkcyjnym (Worker) używany jest natywny kontekst (`getCloudflareContext({ async: true })`).
+- Praktyka:
+  - Preview: `CLOUDFLARE_ENV=dev yarn preview` — zdalne bindingi (zalecane do smoke/testów przed deployem).
+  - Testy integracyjne bez D1/R2: `yarn test:int` (domyślny `NODE_ENV=test`, bez remote bindings).
+  - Testy integracyjne z realnym D1/R2: `cross-env NODE_ENV=production CLOUDFLARE_ENV=prod vitest run` (ostrożnie — testy dotkną produkcyjnych zasobów).
+- Uwaga: używaj poprawnej zmiennej `CLOUDFLARE_ENV`. `CLOUDFARE_ENV` to literówka; skrypty (np. `backup.sh`) ostrzegają, jeśli jest ustawiona.
